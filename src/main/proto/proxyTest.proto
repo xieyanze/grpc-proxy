@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+
+option java_multiple_files = true;
+option java_package = "com.andy.grpc.proxy";
+option java_outer_classname = "ProxyTestProto";
+
+package Proxy;
+
+service ProxyTestService {
+    rpc Echo (EchoRequest) returns (EchoResponse) {}
+}
+
+message EchoRequest {
+    string content = 1;
+}
+
+message EchoResponse {
+    string content = 1;
+}

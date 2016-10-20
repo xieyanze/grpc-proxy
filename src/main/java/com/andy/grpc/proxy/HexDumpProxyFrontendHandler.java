@@ -35,6 +35,7 @@ public class HexDumpProxyFrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
+        System.out.println("channel active");
         final Channel inboundChannel = ctx.channel();
 
         // Start the connection attempt.
@@ -48,6 +49,7 @@ public class HexDumpProxyFrontendHandler extends ChannelInboundHandlerAdapter {
         f.addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture future) {
+                System.out.println("channelActive operationComplete");
                 if (future.isSuccess()) {
                     // connection complete start to read first data
                     inboundChannel.read();
@@ -61,10 +63,12 @@ public class HexDumpProxyFrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
+        System.out.println("===" + msg);
         if (outboundChannel.isActive()) {
             outboundChannel.writeAndFlush(msg).addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture future) {
+                    System.out.println("channelRead operationComplete");
                     if (future.isSuccess()) {
                         // was able to flush out data, start to read the next chunk
                         ctx.channel().read();
@@ -78,6 +82,7 @@ public class HexDumpProxyFrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
+        System.out.println("channelInactive");
         if (outboundChannel != null) {
             closeOnFlush(outboundChannel);
         }

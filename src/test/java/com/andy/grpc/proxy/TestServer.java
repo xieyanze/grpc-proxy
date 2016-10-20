@@ -19,7 +19,8 @@ public class TestServer {
         @Override
         public void echo(EchoRequest request, StreamObserver<EchoResponse> responseObserver) {
             System.out.println("request:" + request);
-            EchoResponse.Builder response = EchoResponse.newBuilder().setContent(request.getContent());
+            EchoResponse.Builder response = EchoResponse.newBuilder().setContent(request.getContent()).setServiceName
+                    ("service1");
             responseObserver.onNext(response.build());
             responseObserver.onCompleted();
         }

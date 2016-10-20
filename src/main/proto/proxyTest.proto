@@ -13,8 +13,10 @@ service ProxyTestService {
 
 message EchoRequest {
     string content = 1;
+    string pwd = 2;
 }
 
 message EchoResponse {
     string content = 1;
+    string serviceName = 2;
 }

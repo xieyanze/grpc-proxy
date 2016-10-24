@@ -13,8 +13,7 @@ class ProxyServerInitializer extends ChannelInitializer<SocketChannel> {
 
     protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline().addLast(
-                // new LoggingHandler(LogLevel.INFO),
-                //new Http2FrameCodec(true),
+                new LoggingHandler(LogLevel.INFO),
                 new DecodeHandler(),
                 new HexDumpProxyFrontendHandler()
         );

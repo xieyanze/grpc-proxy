@@ -296,10 +296,9 @@ public class Http2FrameCodec extends ChannelDuplexHandler {
         @Override
         public void onHeadersRead(final ChannelHandlerContext ctx, int streamId, Http2Headers headers,
                                   int padding, boolean endOfStream) {
-//            Http2HeadersFrame headersFrame = new DefaultHttp2HeadersFrame(headers, endOfStream, padding);
-//            headersFrame.setStreamId(streamId);
-            http2Handler.encoder().frameWriter().writeHeaders(ctx, streamId, headers, padding, true, ctx.newPromise
-                    ());
+            Http2HeadersFrame headersFrame = new DefaultHttp2HeadersFrame(headers, endOfStream, padding);
+            headersFrame.setStreamId(streamId);
+           ctx.fireChannelRead(DecodeHandler.threadLocal.get());
         }
 
         @Override
@@ -307,7 +306,7 @@ public class Http2FrameCodec extends ChannelDuplexHandler {
                               boolean endOfStream) {
             Http2DataFrame dataFrame = new DefaultHttp2DataFrame(data.retain(), endOfStream, padding);
             dataFrame.setStreamId(streamId);
-            ctx.fireChannelRead(data);
+            //ctx.fireChannelRead(DecodeHandler.threadLocal.get());
             return 0;
         }
     }

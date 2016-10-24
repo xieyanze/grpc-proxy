@@ -32,18 +32,19 @@ public class HexDumpProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     // As we use inboundChannel.eventLoop() when buildling the Bootstrap this does not need to be volatile as
     // the outboundChannel will use the same EventLoop (and therefore Thread) as the inboundChannel.
     private Channel outboundChannel;
+    private Bootstrap b = new Bootstrap();
+    private Channel inboundChannel;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         System.out.println("channel active");
-        final Channel inboundChannel = ctx.channel();
+        inboundChannel = ctx.channel();
 
         // Start the connection attempt.
-        Bootstrap b = new Bootstrap();
         b.group(inboundChannel.eventLoop())
-         .channel(ctx.channel().getClass())
-         .handler(new HexDumpProxyBackendHandler(inboundChannel))
-         .option(ChannelOption.AUTO_READ, false);
+                .channel(ctx.channel().getClass())
+                .handler(new HexDumpProxyBackendHandler(inboundChannel))
+                .option(ChannelOption.AUTO_READ, false);
         ChannelFuture f = b.connect(remoteHost, remotePort);
         outboundChannel = f.channel();
         f.addListener(new ChannelFutureListener() {
@@ -63,12 +64,15 @@ public class HexDumpProxyFrontendHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, Object msg) {
-        System.out.println("===" + msg);
+        System.out.println("channel channelRead");
+        if (outboundChannel == null) {
+
+        }
+
         if (outboundChannel.isActive()) {
             outboundChannel.writeAndFlush(msg).addListener(new ChannelFutureListener() {
                 @Override
                 public void operationComplete(ChannelFuture future) {
-                    System.out.println("channelRead operationComplete");
                     if (future.isSuccess()) {
                         // was able to flush out data, start to read the next chunk
                         ctx.channel().read();

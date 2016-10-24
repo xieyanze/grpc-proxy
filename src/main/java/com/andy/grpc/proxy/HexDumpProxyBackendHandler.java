@@ -21,11 +21,11 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-public class HexDumpProxyBackendHandler extends ChannelInboundHandlerAdapter {
+class HexDumpProxyBackendHandler extends ChannelInboundHandlerAdapter {
 
     private final Channel inboundChannel;
 
-    public HexDumpProxyBackendHandler(Channel inboundChannel) {
+    HexDumpProxyBackendHandler(Channel inboundChannel) {
         this.inboundChannel = inboundChannel;
     }
 
